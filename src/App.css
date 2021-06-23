@@ -1,10 +1,18 @@
-.App {
+.App,
+.video-react-video {
   text-align: center;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.video {
+  min-width: 500px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
 }
 
 @media (prefers-reduced-motion: no-preference) {
