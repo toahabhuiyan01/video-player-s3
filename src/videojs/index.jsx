@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Videojs from "video.js";
+import Dropdown from 'react-bootstrap/Dropdown';
+// import "videojs-plus";
+// import "videojs-plus/dist/videojs-plus.css";
 
 // Add hls plug-in to guarantee to play m3u8 format video
 import "videojs-contrib-hls";
@@ -10,6 +13,17 @@ import "./style.css";
 
 window.videojs = Videojs;
 import("video.js/dist/lang/zh-CN.js");
+
+const vjsComponent = Videojs.getComponent('Component');
+class EpisodeList extends vjsComponent {
+  render() {
+    return (
+        <button>hello</button>
+    );
+  }
+}
+
+vjsComponent.registerComponent('EpisodeList', EpisodeList);
 
 class VideoPlayer extends Component {
   static propTypes = {
@@ -31,6 +45,21 @@ class VideoPlayer extends Component {
     videoId: "custom-video" + +new Date()
   };
 
+  sources = {
+      p720: {
+          name: "720p",
+          url: "https://shadhintesttoaha.s3-us-west-2.amazonaws.com/public/Facebook(1).mp4"
+      },
+      p480: {
+          name: "480p",
+          url: 'https://ct-all-bucket-development.s3-us-west-2.amazonaws.com/public/Facebook.mp4'
+      },
+      p360: {
+          name: "360p",
+          url: 'https://shadhintesttoaha.s3-us-west-2.amazonaws.com/public/Facebook(1).mp4'
+      }
+  };
+
   // Initialize content
   UNSAFE_componentWillReceiveProps(props) {
     try {
@@ -49,10 +78,43 @@ class VideoPlayer extends Component {
     }
   }
 
+  onClick = () => {
+    console.log('helo');
+  }
+
+  getResolutions = () => {
+      let data = [];
+      for (const [key, value] of Object.entries(this.sources)) {
+          data.push(<Dropdown.Item className="btn-sm border-bottom" name={key} eventKey={key}><small>{value.name}</small></Dropdown.Item>);
+      }
+      return data;
+  }
+
+  componentDidMount() {
+    const dic = document.getElementsByClassName("vjs-control-bar");
+    // console.log(dic[0].children[10]);
+
+    /** 
+    var pin = document.createElement("div"); // create new div
+    pin.setAttribute("class", "Pin");
+    const butt = <button onClick={this.onClick}>hello</button>
+
+    pin.innerHTML = butt;
+
+    var parentNode = document.getElementsByClassName("vjs-control-bar")[0];
+    var childNode = document.getElementsByClassName("vjs-playback-rate")[0];
+
+    parentNode.insertBefore(pin, childNode);
+    */
+  }
+
   onClickArrow =(e) => {
     const keyCode = e.keyCode;
     // console.log(this.player.volume(this.player.volume() * .5));
-    console.log(this.myRef.current.offsetParent.childNodes[5].children(<p>hello</p>));
+    // console.log(this.myRef.current.offsetParent.id);
+    // this.myRef.current = <h1>hello</h1>;
+    // console.log(this.myRef.current.props);
+    this.setState(this.state);
     // this.myRef.current.offsetParent.appendChild(<button>hello</button>);
 
     
@@ -100,13 +162,30 @@ class VideoPlayer extends Component {
       seekable: true,
       seeking: true,
       controlBar: {
-        getVideoPlaybackQuality: [src],
+        controls: "EpisodeList"
       },
       preload: "auto",
       fluid: true
     });
 
-    this.player.src({ src });
+    this.player.src('https://shadhintesttoaha.s3-us-west-2.amazonaws.com/public/Facebook(1).mp4');
+
+    this.player.playlist =
+      [
+        {
+          sources: [
+            {
+              src: 'https://d2wgekcgm4v3wq.cloudfront.net/c1/hls/Video-20210613_115757-Meeting+Recording_270p_qvbr.m3u8',
+              type: 'video/mp4'
+            }
+          ],
+            poster: ""
+        }
+      ]
+      this.player.getChild('controlBar').addChild("EpisodeList", {})
+
+    console.log(this.player.getChild('controlBar').children());
+  
   }
 
   render() {
@@ -127,7 +206,6 @@ class VideoPlayer extends Component {
           id={videoId} 
           className="video-js"
         >
-          <button className="controlBar">hello</button>
         </video>
       </div>
     );

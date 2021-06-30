@@ -30,6 +30,7 @@
     "video-react": "^0.14.1",
     "video.js": "^7.12.3",
     "videojs-contrib-hls": "^5.15.0",
+    "videojs-plus": "^1.6.9",
     "videojs-react-enhanced": "^0.3.1",
     "web-vitals": "^1.1.2",
     "yup": "^0.32.9"
